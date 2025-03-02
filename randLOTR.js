@@ -10,7 +10,7 @@ const rollTheDice = (list) => {
     return list[Math.floor(Math.random() * list.length)]
 }
 
-const randLOTR = async () => {
+export const randLOTR = async () => {
     const bearer = await promises.readFile('lotrBearer.txt')
 
     const response = await fetch('https://the-one-api.dev/v2/quote', {
