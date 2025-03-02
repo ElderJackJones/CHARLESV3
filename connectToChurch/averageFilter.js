@@ -13,7 +13,8 @@ export function averageFilter(thing) {
         if (isRecent(person)) {
             acc.push({
                 guid: person.personGuid,
-                zoneName: person.zoneName
+                zoneName: person.zoneName,
+                areaName: person.areaName
             });
         }
         return acc;
