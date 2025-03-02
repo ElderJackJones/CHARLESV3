@@ -66,7 +66,7 @@ const getPersonTimeline = async (id, bearer, cookie) => {
 export const smlReport = async () => {
 
     const bar = new cliProgress.SingleBar({
-        format: 'But the fat Hobbit, he knows. Eyes always watching.\n\n |' + chalk.magenta('{bar}') + '| {percentage}% || {value}/{total} People || ETA: {eta_formatted}',
+        format: 'But the fat Hobbit, he knows. Eyes always watching. |' + chalk.magenta('{bar}') + '| {value}/{total} People || ETA: {eta_formatted}',
         barCompleteChar: '\u2588',
         barIncompleteChar: '\u2591',
         hideCursor: true
