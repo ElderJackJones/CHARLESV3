@@ -66,6 +66,9 @@ const waitForE2ee = async (e2ee, page) =>  {
 }
 
 const goToChat = async (allTheChats, page, id) => {
+    if (page.url().includes(id)) {
+        return
+    }
     let chatFound = false
 
     for (const chat of allTheChats) {
@@ -218,6 +221,7 @@ export const sneakyFacebook = async () => {
         // that you have to be human! :)
 
         await goToChat(allTheChats, page, zones[zone])
+        
         await sleep(5000)
         await page.evaluate((message) => {
             navigator.clipboard.writeText(message);

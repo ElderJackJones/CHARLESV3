@@ -2,14 +2,6 @@ import chalk from "chalk";
 import cliProgress from 'cli-progress'
 import { averageFilter } from "./averageFilter.js";
 
-function meanyFace(arr) {
-    const validNumbers = arr.filter(item => item !== null && item !== undefined && !isNaN(item)); 
-    if (validNumbers.length === 0) return "0 min"; // Avoid division by zero
-
-    const mean = validNumbers.reduce((sum, item) => sum + item, 0) / validNumbers.length;
-    
-    return formatTime(mean);
-}
 
 function formatTime(minutes) {
     const days = Math.floor(minutes / 1440); // 1 day = 1440 minutes

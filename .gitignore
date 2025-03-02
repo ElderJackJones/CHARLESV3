@@ -1,6 +1,6 @@
-payload.json
-people.json
 eslint.config.js
 /node_modules
 bearer.txt
 resources/
+people.json
+payload.json

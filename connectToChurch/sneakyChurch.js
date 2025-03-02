@@ -37,9 +37,9 @@ export async function login(user, pass, page) {
 // False == should not pull
 async function toPullOrNotToPullThatIsTheQuestion(pathToHome) {
     try {
-        let thiccList = readFileSync(path.join(pathToHome, 'resources', 'people.json'))
+        let thiccList = readFileSync(path.join(pathToHome, 'resources', 'people.json'), 'utf-8')
         let thiccJSON = await JSON.parse(thiccList)
-        let rawList = readFileSync(path.join(pathToHome, 'resources', 'rawList.json'))
+        let rawList = readFileSync(path.join(pathToHome, 'resources', 'rawList.json'), 'utf-8')
         let rawJSON = await JSON.parse(rawList)
         if (!isMoreThanADayOld(thiccJSON.processedTime) && !isMoreThanADayOld(rawJSON.processedTime)) {
             return false
@@ -47,8 +47,9 @@ async function toPullOrNotToPullThatIsTheQuestion(pathToHome) {
         else {
             return true
         }
-    // eslint-disable-next-line no-unused-vars
+     
     } catch (e) {
+        console.log(e)
         return true
     }
 }
@@ -95,7 +96,7 @@ export async function sneakyChurch(user, pass, pathToHome="") {
     let beginPackage
 
     // Get new list if we don't have one cached
-    if (toPullOrNotToPullThatIsTheQuestion(pathToHome)) {
+    if (await toPullOrNotToPullThatIsTheQuestion(pathToHome)) {
         spool.color = 'cyan'
         spool.text = 'Fetching referrals'
         const fullList = await getPeopleList(page, bearer, decodedBearer)

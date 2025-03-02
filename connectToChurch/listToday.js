@@ -30,11 +30,20 @@ function unattempted(obj) {
 }
 
 export async function listToday(list) {
-    const todaysList = list.filter(obj => isWithinTimeRange(obj.assignedDate))
-    const todaysListWithoutGrey = todaysList.filter(obj => isGreenOrYellow(obj))
-    const listFinal = todaysListWithoutGrey.filter(obj =>{
-        return (unattempted(obj) || unsuccessful(obj))
-    })
-
+    let listFinal = []
+    if (typeof list === 'object') {
+        for (const key in list) {
+            if (isWithinTimeRange(list[key]) && isGreenOrYellow(list[key]) && (unattempted(list[key]) || unsuccessful(list[key]))) {
+                listFinal.push(list[key])
+            }
+        }
+    } else {
+        let todaysList = list.filter(obj => isWithinTimeRange(obj.assignedDate))
+        const todaysListWithoutGrey = todaysList.filter(obj => isGreenOrYellow(obj))
+        listFinal = todaysListWithoutGrey.filter(obj =>{
+            return (unattempted(obj) || unsuccessful(obj))
+        })
+    }
+    
     return listFinal
 }

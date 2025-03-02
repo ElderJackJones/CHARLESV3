@@ -15,7 +15,7 @@ export async function editPayload() {
     
     if (existsSync('resources/charlesConfig.json')) {
         try {
-            zoneObj = JSON.parse(readFileSync('resources/charlesConfig.json', 'utf8'));
+            zoneObj = await JSON.parse(readFileSync('resources/charlesConfig.json', 'utf8'));
         } catch (err) {
             console.error(err);
             return;
@@ -27,11 +27,19 @@ export async function editPayload() {
     const prettyList = {};
     prettyList["avg"] = payload.average
 
+    for (const zone in payload.payload) {
+        console.log(zone)
+    }
+
     for (const zone in zoneObj) {
+        const zoneClean = zone.trim().toString()
         const areaMap = {};  // Will hold areaName as key, and people array as value
-        
-        for (const person of payload.payload[zone]) {
-            if (zone.toLowerCase() === person.zoneName.toLowerCase()) {
+        if (!payload.payload[zoneClean]) {
+            console.log(zoneClean)
+            continue
+        }        
+        for (const person of payload.payload[zoneClean]) {
+            if (zone.toLowerCase().trim() === person.zoneName.toLowerCase().trim()) {
                 const areaName = person.areaName;
                 // Initialize an array for the area if it doesn't exist yet
                 if (!areaMap[areaName]) {
@@ -42,7 +50,7 @@ export async function editPayload() {
             }
         }
         
-        prettyList[zone.toString()] = areaMap;
+        prettyList[zoneClean.toString()] = areaMap;
 
     }
     return prettyList
