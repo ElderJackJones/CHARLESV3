@@ -2,7 +2,6 @@ import chalk from "chalk"
 import cliProgress from 'cli-progress'
 import fetch from 'node-fetch'
 import { promises } from "fs"
-import { randLOTR } from './randLOTR.js'
 import { averageFilter } from "./connectToChurch/averageFilter.js"
 
 function formatTime(minutes) {
@@ -66,10 +65,8 @@ const getPersonTimeline = async (id, bearer, cookie) => {
 
 export const smlReport = async () => {
 
-    const randQuote = await randLOTR()
-
     const bar = new cliProgress.SingleBar({
-        format: randQuote + "\n  " + chalk.magenta('{bar}') + '| {percentage}% || {value}/{total} People || ETA: {eta_formatted}',
+        format: 'But the fat Hobbit, he knows. Eyes always watching.\n\n |' + chalk.magenta('{bar}') + '| {percentage}% || {value}/{total} People || ETA: {eta_formatted}',
         barCompleteChar: '\u2588',
         barIncompleteChar: '\u2591',
         hideCursor: true
@@ -135,5 +132,3 @@ export const smlReport = async () => {
 
     return message
 }  
-
-console.log(await smlReport())
