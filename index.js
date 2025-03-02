@@ -22,7 +22,8 @@ async function main() {
                 { title: 'Send Charles message', value: 'charles'},
                 { title: 'Get SML report', value: 'report'},
                 {title: 'Change settings', value: 'settings'},
-                { title: 'Yeet outta here', value: 'exit'}
+                { title: 'Test run Charles', value: 'test'},
+                { title: 'Yeet outta here', value: 'exit'},
             ],
             initial: 0,
             instructions: false
@@ -76,7 +77,18 @@ async function main() {
             } catch (err) {
                 await configCharles('./resources/charlesConfig.json')
             }
-            
+        }
+        else if (select.program?.includes('test')) {
+            console.clear()
+            const id = await prompts({
+                type: 'text',
+                name: 'testZone',
+                message: 'What is the Messenger ID of your test chat?'
+            })
+            console.clear()
+            const [todaysList, beginPackage] = await sneakyChurch(config.username, config.password)
+            await createPayload(todaysList, beginPackage)
+            await sneakyFacebook({testZone: id.testZone}, false)
         }
     } while (!select.program?.includes('exit'));
 }

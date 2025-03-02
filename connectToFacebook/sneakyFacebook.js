@@ -21,33 +21,6 @@ const wiggy = async (page) => {
 }
 
 
-// // More humanlike typing
-// const humanType = async (page, element, message, bar) => {
-//     for (const char of message) {
-//         // Simulate occasional hesitations
-//         if (Math.random() < 0.05) { // 5% chance
-//             await sleep(Math.floor(Math.random() * 500) + 200);
-//         }
-//         // Simulate a typing error occasionally
-//         if (Math.random() < 0.03) { // 3% chance
-//             const mistake = 'x'; // a random wrong character, could be improved
-//             await element.type(mistake, { delay: 150 });
-//             await sleep(Math.floor(Math.random() * 100) + 50);
-//             await page.keyboard.press('Backspace');
-//         }
-//         // Type the intended character
-//         if (char === "\n") {
-//             await page.keyboard.down('Shift');
-//             await page.keyboard.press('Enter');
-//             await page.keyboard.up('Shift');
-//         } else {
-//             await element.type(char, { delay: Math.floor(Math.random() * 150) + 50 });
-//         }
-//         bar.increment()
-//     }
-// };
-
-
 
 const waitForE2ee = async (e2ee, page) =>  {
     let pinBox = null
@@ -134,11 +107,11 @@ const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export const sneakyFacebook = async () => {
+export const sneakyFacebook = async (zones=null, headless=true) => {
     let spool = ora('Booting up Charles').start()
     // Set up environment (is that how it's spelt?)
     const browser = await puppeteer.launch({
-        headless: false,  // toggle if you want to see the browser
+        headless: headless,  // toggle if you want to see the browser
         args: [
         '--disable-infobars',
         '--start-maximized',
@@ -172,16 +145,15 @@ export const sneakyFacebook = async () => {
 
     await waitForE2ee('123456', page)
 
-
-      
-    
-    // Go through each chat and zone and do cool stuff
-    let zones 
-    if (existsSync('resources/charlesConfig.json')) {
-        zones = await promises.readFile('resources/charlesConfig.json')
-        .then(JSON.parse)
-    } else {
-        zones = await getZone()
+    // Create zones only if it hasn't been passed in
+    if (!zones) {
+        // Go through each chat and zone and do cool stuff
+        if (existsSync('resources/charlesConfig.json')) {
+            zones = await promises.readFile('resources/charlesConfig.json')
+            .then(JSON.parse)
+        } else {
+            zones = await getZone()
+        }
     }
 
     let reformattedPayload = await editPayload()
