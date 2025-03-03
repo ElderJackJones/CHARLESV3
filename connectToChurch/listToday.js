@@ -30,10 +30,11 @@ function unattempted(obj) {
 }
 
 export async function listToday(list) {
+    console.log(list)
     let listFinal = []
-    if (typeof list === 'object') {
+    if (!Array.isArray(list) && typeof list === 'object') {
         for (const key in list) {
-            if (isWithinTimeRange(list[key]) && isGreenOrYellow(list[key]) && (unattempted(list[key]) || unsuccessful(list[key]))) {
+            if (isWithinTimeRange(list[key].assignedDate) && isGreenOrYellow(list[key]) && (unattempted(list[key]) || unsuccessful(list[key]))) {
                 listFinal.push(list[key])
             }
         }

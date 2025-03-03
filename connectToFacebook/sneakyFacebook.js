@@ -161,6 +161,7 @@ export const sneakyFacebook = async (zones=null, headless=true) => {
     setInterval(() => wiggy(page), 5000);
     spool.succeed(' Everything is spick and span')
     // Go through list of zones and send a message to each
+    delete zones.Dothan
 
     for (const zone in zones) {
         let waitingSpool = ora(`Storming the castle`).start()

@@ -109,6 +109,7 @@ export async function getAverage(wholeShebang, page) {
     delete unprocessedContacts[null];
     delete unprocessedContacts[undefined];
     delete unprocessedContacts[""];
+    delete unprocessedContacts['Dothan']
 
     // Compute and sort averages
     let zoneAverages = Object.entries(unprocessedContacts)

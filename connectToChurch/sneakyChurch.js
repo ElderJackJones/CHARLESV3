@@ -62,7 +62,7 @@ export async function getPeopleList(page, bearer, decodedBearer) {
                 'Authorization' : `Bearer ${bearer}`
             }
         })
-        const list = await peopleList.text()
+        const list = await peopleList.json()
         return list
     }, decodedBearer, bearer)
     return list
@@ -99,32 +99,34 @@ export async function sneakyChurch(user, pass, pathToHome="") {
     if (await toPullOrNotToPullThatIsTheQuestion(pathToHome)) {
         spool.color = 'cyan'
         spool.text = 'Fetching referrals'
-        const fullList = await getPeopleList(page, bearer, decodedBearer)
+        const fullListObj = await getPeopleList(page, bearer, decodedBearer)
 
-        writeFileSync(path.join(pathToHome, 'resources', 'rawList.json'), fullList)
-        const fullListObj = JSON.parse(fullList)
+        writeFileSync(path.join(pathToHome, 'resources', 'rawList.json'), JSON.stringify(fullListObj))
         spool.info('Getting Average contact times!')
 
         beginPackage = await getAverage(fullListObj.persons, page)
 
         lossyList = await superParse(fullListObj)
-        todaysList = await listToday(lossyList)
+        todaysList = await listToday(lossyList.persons)
         writeFileSync(path.join(pathToHome, 'resources', 'people.json'), JSON.stringify(
             { 'processedTime' : Date.now(),
-            'persons' : {...todaysList}
+            'persons' : todaysList
             }
         ))
-
+        spool.succeed('Referrals retrieved')
+        await browser.close()
+        return [todaysList, beginPackage]
     } else {
         lossyList = await JSON.parse(readFileSync(path.join(pathToHome, 'resources', 'people.json')))
         let rawList = await JSON.parse(readFileSync(path.join(pathToHome, 'resources', 'rawList.json')))
         spool.info('Snooping out Average contact times!')
 
         beginPackage = await getAverage(rawList.persons, page)
-        todaysList = await listToday(lossyList)
+        todaysList = await listToday(lossyList.persons)
+        spool.succeed('Referrals retrieved')
+        await browser.close()
+        return [todaysList, beginPackage]
     }
-    spool.succeed('Referrals retrieved')
-    await browser.close()
-    return [todaysList, beginPackage]
+
 }
 

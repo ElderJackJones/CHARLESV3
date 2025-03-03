@@ -7,6 +7,7 @@ function isMoreThan12HoursOld(timestamp) {
 }
 
 export async function createPayload(list, avgMessage) {
+    console.log('list: ', list)
     const FILE_NAME = 'payload.json';
 
     if (existsSync(FILE_NAME)) {
@@ -28,19 +29,25 @@ export async function createPayload(list, avgMessage) {
         return null; // Return `null` or throw an error if needed
     }
 
-    let payload = { stamp: Date.now(), average: avgMessage, payload: {} };
+    delete zoneList?.Dorthan
+    let payload = { stamp: Date.now(), average: avgMessage, payload: {} }
     const zones = Object.keys(zoneList);
+
+    // If list.persons exists and is an object, use its values; 
+    // if it's already an array, use it directly.
+    let cleaned = list
+
     
     for (let zone of zones) {
-        payload.payload[zone] = list.filter(person => 
+        payload.payload[zone] = cleaned.filter(person => 
             person.zoneName?.trim().toLowerCase() === zone.toLowerCase()
-        );
+        )
     }
 
         try {
-            writeFileSync(FILE_NAME, JSON.stringify(payload, null, 2));
+            writeFileSync(FILE_NAME, JSON.stringify(payload, null, 2))
         } catch (error) {
-            console.error(`Error writing ${FILE_NAME}:`, error);
+            console.error(`Error writing ${FILE_NAME}:`, error)
         }
     
         return payload;
