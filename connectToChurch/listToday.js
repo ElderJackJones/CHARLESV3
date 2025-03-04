@@ -30,7 +30,6 @@ function unattempted(obj) {
 }
 
 export async function listToday(list) {
-    console.log(list)
     let listFinal = []
     if (!Array.isArray(list) && typeof list === 'object') {
         for (const key in list) {

@@ -54,10 +54,14 @@ async function main() {
                 if (moveOn.value) {
                     console.clear()
                     const [todaysList, beginPackage] = await sneakyChurch(config.username, config.password)
-                    console.log('List at index', todaysList)
                     await createPayload(todaysList, beginPackage)
                     await sneakyFacebook()
                 }
+            } else {
+                console.clear()
+                    const [todaysList, beginPackage] = await sneakyChurch(config.username, config.password)
+                    await createPayload(todaysList, beginPackage)
+                    await sneakyFacebook()
             }
         } else if (select.program?.includes('report')) {
                 try {

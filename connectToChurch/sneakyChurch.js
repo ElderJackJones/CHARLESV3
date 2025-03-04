@@ -107,7 +107,7 @@ export async function sneakyChurch(user, pass, pathToHome="") {
         beginPackage = await getAverage(fullListObj.persons, page)
 
         lossyList = await superParse(fullListObj)
-        todaysList = await listToday(lossyList.persons)
+        todaysList = await listToday(lossyList)
         writeFileSync(path.join(pathToHome, 'resources', 'people.json'), JSON.stringify(
             { 'processedTime' : Date.now(),
             'persons' : todaysList

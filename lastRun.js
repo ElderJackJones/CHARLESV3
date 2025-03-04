@@ -13,7 +13,7 @@ export async function lastRun() {
         if ((Date.now() - (2 * 24 * 60 * 60 * 1000)) <= parseInt(timeStampFile)) {
             return true
         } else {
-            await promises.writeFile('resources/lastRun.txt', Date.now())
+            await promises.writeFile('resources/lastRun.txt', Date.now().toString())
             return false
         }
     } else {
