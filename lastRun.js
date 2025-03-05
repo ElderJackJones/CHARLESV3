@@ -6,6 +6,7 @@ export async function lastRun() {
     let timeStampFile
     try {
         timeStampFile = (await promises.readFile('resources/lastRun.txt')).toString()
+    // eslint-disable-next-line no-unused-vars
     } catch (e) {
         timeStampFile = null
     }

@@ -73,6 +73,8 @@ async function main() {
                 }
         } else if (select.program?.includes('exit')) {
             console.log("Exiting...");
+            // eslint-disable-next-line no-undef
+            process.kill()
             break
         } else if (select.program?.includes('settings')) {
             try {
@@ -93,7 +95,7 @@ async function main() {
             console.clear()
             const [todaysList, beginPackage] = await sneakyChurch(config.username, config.password)
             await createPayload(todaysList, beginPackage)
-            await sneakyFacebook({testZone: id.testZone}, false)
+            await sneakyFacebook(id.testZone, false)
         }
     } while (!select.program?.includes('exit'));
 }

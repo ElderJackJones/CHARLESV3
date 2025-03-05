@@ -72,7 +72,7 @@ export async function sneakyChurch(user, pass, pathToHome="") {
     console.clear()
     let spool = ora('Opening browser').start()
     // Launch browser and use cookies from previous session if possible.
-    const browser = await puppeteer.launch({ headless:true })
+    const browser = await puppeteer.launch({ headless:false })
     const page = await browser.newPage()
     spool.color = 'magenta'
     spool.text = "Doin' some black magic"

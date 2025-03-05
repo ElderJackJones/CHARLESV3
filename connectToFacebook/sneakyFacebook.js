@@ -107,7 +107,7 @@ const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export const sneakyFacebook = async (zones=null, headless=true) => {
+export const sneakyFacebook = async (testId=null, headless=true) => {
     let spool = ora('Booting up Charles').start()
     // Set up environment (is that how it's spelt?)
     const browser = await puppeteer.launch({
@@ -145,23 +145,22 @@ export const sneakyFacebook = async (zones=null, headless=true) => {
 
     await waitForE2ee('123456', page)
 
-    // Create zones only if it hasn't been passed in
-    if (!zones) {
-        // Go through each chat and zone and do cool stuff
-        if (existsSync('resources/charlesConfig.json')) {
-            zones = await promises.readFile('resources/charlesConfig.json')
-            .then(JSON.parse)
-        } else {
-            zones = await getZone()
-        }
+    let zones
+
+    // Go through each chat and zone and do cool stuff
+    if (existsSync('resources/charlesConfig.json')) {
+        zones = await promises.readFile('resources/charlesConfig.json')
+        .then(JSON.parse)
+    } else {
+        zones = await getZone()
     }
 
     let reformattedPayload = await editPayload()
 
-    setInterval(() => wiggy(page), 5000);
+    let intervalId = setInterval(() => wiggy(page), 5000);
     spool.succeed(' Everything is spick and span')
     // Go through list of zones and send a message to each
-    delete zones.Dothan
+    delete zones?.Dothan
 
     for (const zone in zones) {
         let waitingSpool = ora(`Storming the castle`).start()
@@ -193,7 +192,7 @@ export const sneakyFacebook = async (zones=null, headless=true) => {
         // enough. If you try to change this, remember 
         // that you have to be human! :)
 
-        await goToChat(allTheChats, page, zones[zone])
+        await goToChat(allTheChats, page, testId ? testId : zones[zone])
         
         await sleep(5000)
         await page.evaluate((message) => {
@@ -211,6 +210,6 @@ export const sneakyFacebook = async (zones=null, headless=true) => {
         await sleep(5000)
         waitingSpool.succeed(`Message sent to ${zone}`)
     }
-    
+    clearInterval(intervalId)
     await browser.close()
 } 
