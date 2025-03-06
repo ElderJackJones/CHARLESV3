@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import cliProgress from 'cli-progress'
 import { averageFilter } from "./averageFilter.js";
+import Bottleneck from "bottleneck";
 
 
 function formatTime(minutes) {
@@ -15,6 +16,7 @@ function formatTime(minutes) {
 
     return result.join(" ");
 }
+
 
 
 
@@ -50,32 +52,27 @@ async function processContactTime(timeline) {
     return null;
 }
 
-function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function getContactTime(guid, page) {
+async function contactTimeUnhinged(guid, page, bar, unprocessedContacts, person) {
     // await delay(500); // Wait .5 second between requests
     const response = await page.evaluate(async (guid) => {
         const url = `https://referralmanager.churchofjesuschrist.org/services/progress/timeline/${guid}`;
-        const response = await fetch(url, {method: 'GET'} );
-    
-        if (response.status === 503) {
-            console.warn(`503 error for ${guid}, retrying in 5 seconds...`);
-            await delay(5000);
-            return getContactTime(guid, page); // Retry the request
-        }
-    
-        if (!response.ok) {
-            throw new Error(`Fetch failed with status ${response.status}`);
-        }
-
+        const response = await fetch(url, {method: 'GET'} )
         return await response.json()
-    
     }, guid)
+
+    bar.increment()
+
+    const time = await processContactTime(response)
+    if (!unprocessedContacts[person.zoneName]) {
+        unprocessedContacts[person.zoneName] = [];
+    }
+    unprocessedContacts[person.zoneName].push(time);
     
-    return await processContactTime(response)
 }
+
+const limiter = new Bottleneck({
+    maxConcurrent: 5,
+})
 
 
 
@@ -91,17 +88,15 @@ export async function getAverage(wholeShebang, page) {
     let unprocessedContacts = {};
 
     bar.start(parsed.length, 0);
-    for (const person of parsed) {
-        if (!person.guid) {
-            continue;
-        }
-        const time = await getContactTime(person.guid, page);
-        if (!unprocessedContacts[person.zoneName]) {
-            unprocessedContacts[person.zoneName] = [];
-        }
-        unprocessedContacts[person.zoneName].push(time);
-        bar.increment();
-    }
+
+    let tasks = parsed
+        .filter(person => person.guid) // Ignore people without a GUID
+        .map(person => 
+            limiter.schedule(() => 
+                contactTimeUnhinged(person.guid, page, bar, unprocessedContacts, person)
+            )
+        );
+    await Promise.all(tasks)
 
     bar.stop();
 

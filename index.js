@@ -3,15 +3,26 @@ import prompts from "prompts";
 import { configCharles } from "./configCharles.js";
 import { sneakyChurch } from "./connectToChurch/sneakyChurch.js";
 import { createPayload } from "./createPayload.js";
-import { promises as fs } from "fs";
+import { promises as fs, existsSync, mkdirSync } from "fs";
 import { sneakyFacebook } from "./connectToFacebook/sneakyFacebook.js";
 import { lastRun } from "./lastRun.js";
 import { smlReport } from "./smlReport.js";
+import { createConfig } from "./createConfig.js";
 
 async function main() {
+    if (!existsSync('./resources')) {
+        mkdirSync('./resources')
+    }
     console.clear()
     console.log(chalk.dim('Welcome to Charles, booting up...'))
-    const config = await fs.readFile('./resources/config.json', 'utf8').then(JSON.parse);
+    let config
+    try {
+        config = await fs.readFile('./resources/config.json', 'utf8').then(JSON.parse);
+    // eslint-disable-next-line no-unused-vars
+    } catch (e) {
+        console.log(chalk.redBright("Looks like you haven't used Charles before! Let's set this up...\n"))
+        config = await createConfig("resources/config.json")
+    }
     
     async function menu() {
         const questions = {
@@ -73,8 +84,6 @@ async function main() {
                 }
         } else if (select.program?.includes('exit')) {
             console.log("Exiting...");
-            // eslint-disable-next-line no-undef
-            process.kill()
             break
         } else if (select.program?.includes('settings')) {
             try {

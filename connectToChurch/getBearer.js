@@ -22,8 +22,13 @@ export async function getBearer(page) {
     let bearer 
     const currentDir = getCurrentDir();
     const filePath = path.resolve(currentDir, '..', 'resources', 'bearer.txt'); // Resolves to the correct path
-     bearer = await fs.readFile(filePath, 'utf8'); // Using fs.readFile instead of fetch
-
+    try {
+        bearer = await fs.readFile(filePath, 'utf8'); // Using fs.readFile instead of fetch
+    // eslint-disable-next-line no-unused-vars
+    } catch (e) {
+        bearer = null
+    }
+   
     if (!bearer) {
         try {
             // Fetch authentication data from the server
