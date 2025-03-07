@@ -23,7 +23,7 @@ HA, nice try. If you're supposed to use this, you'll have received a document wi
 - [x] Create pseudo-human input for websites
 - [x] Create a CLI to interact with Charles (this particular instance of Holly)
 - [ ] Reformat ugly code
-- [ ] Refactor fetching
+- [x] Refactor fetching
 - [ ] Wrap in electron.js interface?
 - [ ] Make shareable across missions
 - [ ] Increase efficiency

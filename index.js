@@ -102,7 +102,7 @@ async function main() {
                 message: 'What is the Messenger ID of your test chat?'
             })
             console.clear()
-            const [todaysList, beginPackage] = await sneakyChurch(config.username, config.password)
+            const [todaysList, beginPackage] = await sneakyChurch(config.username, config.password, "", false)
             await createPayload(todaysList, beginPackage)
             await sneakyFacebook(id.testZone, false)
         }

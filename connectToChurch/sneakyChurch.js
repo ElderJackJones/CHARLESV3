@@ -68,11 +68,11 @@ export async function getPeopleList(page, bearer, decodedBearer) {
     return list
 }
 
-export async function sneakyChurch(user, pass, pathToHome="") {
+export async function sneakyChurch(user, pass, pathToHome="", headless=true) {
     console.clear()
     let spool = ora('Opening browser').start()
     // Launch browser and use cookies from previous session if possible.
-    const browser = await puppeteer.launch({ headless:false })
+    const browser = await puppeteer.launch({ headless:headless })
     const page = await browser.newPage()
     spool.color = 'magenta'
     spool.text = "Doin' some black magic"
