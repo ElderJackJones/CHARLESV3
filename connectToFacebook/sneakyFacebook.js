@@ -107,7 +107,7 @@ const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export const sneakyFacebook = async (testId=null, headless=true) => {
+export const sneakyFacebook = async (testId=null, headless=true, e2ee) => {
     let spool = ora('Booting up Charles').start()
     // Set up environment (is that how it's spelt?)
     const browser = await puppeteer.launch({
@@ -143,7 +143,7 @@ export const sneakyFacebook = async (testId=null, headless=true) => {
 
   
 
-    await waitForE2ee('123456', page)
+    await waitForE2ee(e2ee, page)
 
     let zones
 

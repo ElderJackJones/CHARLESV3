@@ -53,6 +53,11 @@ async function main() {
             // run charles
            // Only run if it has been less than 24 hours...
             const lessThan24HoursAgo = await lastRun()
+            const e2ee = await prompts({
+                type: 'text',
+                name: 'e2ee',
+                message: 'What is your e2ee pin?'
+            })
             if (lessThan24HoursAgo) {
                 const moveOn = await prompts(
                     {
@@ -66,13 +71,13 @@ async function main() {
                     console.clear()
                     const [todaysList, beginPackage] = await sneakyChurch(config.username, config.password)
                     await createPayload(todaysList, beginPackage)
-                    await sneakyFacebook()
+                    await sneakyFacebook(undefined, undefined, e2ee)
                 }
             } else {
                 console.clear()
                     const [todaysList, beginPackage] = await sneakyChurch(config.username, config.password)
                     await createPayload(todaysList, beginPackage)
-                    await sneakyFacebook()
+                    await sneakyFacebook(undefined, undefined, e2ee)
             }
         } else if (select.program?.includes('report')) {
                 try {
@@ -96,15 +101,19 @@ async function main() {
         }
         else if (select.program?.includes('test')) {
             console.clear()
-            const id = await prompts({
+            const security = await prompts({
                 type: 'text',
                 name: 'testZone',
                 message: 'What is the Messenger ID of your test chat?'
+            }, {
+                type: 'text',
+                name: 'e2ee',
+                message: 'What is your e2ee pin?'
             })
             console.clear()
             const [todaysList, beginPackage] = await sneakyChurch(config.username, config.password, "", false)
             await createPayload(todaysList, beginPackage)
-            await sneakyFacebook(id.testZone, false)
+            await sneakyFacebook(security.testZone, false, security.e2ee)
         }
     } while (!select.program?.includes('exit'));
 }
