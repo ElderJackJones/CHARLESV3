@@ -71,7 +71,7 @@ async function contactTimeUnhinged(guid, page, bar, unprocessedContacts, person)
 }
 
 const limiter = new Bottleneck({
-    maxConcurrent: 5,
+    maxConcurrent: 10,
 })
 
 

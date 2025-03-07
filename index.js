@@ -101,7 +101,7 @@ async function main() {
         }
         else if (select.program?.includes('test')) {
             console.clear()
-            const security = await prompts({
+            const security = await prompts([{
                 type: 'text',
                 name: 'testZone',
                 message: 'What is the Messenger ID of your test chat?'
@@ -109,7 +109,7 @@ async function main() {
                 type: 'text',
                 name: 'e2ee',
                 message: 'What is your e2ee pin?'
-            })
+            }])
             console.clear()
             const [todaysList, beginPackage] = await sneakyChurch(config.username, config.password, "", false)
             await createPayload(todaysList, beginPackage)

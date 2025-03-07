@@ -3,6 +3,7 @@ import cliProgress from 'cli-progress'
 import fetch from 'node-fetch'
 import { promises } from "fs"
 import { averageFilter } from "./connectToChurch/averageFilter.js"
+import Bottleneck from "bottleneck"
 
 function formatTime(minutes) {
     const days = Math.floor(minutes / 1440); // 1 day = 1440 minutes
@@ -49,8 +50,8 @@ async function processContactTime(timeline) {
 }
 
 
-const getPersonTimeline = async (id, bearer, cookie) => {
-    const personTimeline = await fetch(`https://referralmanager.churchofjesuschrist.org/services/progress/timeline/${id}`, {
+const getPersonTimeline = async (person, bearer, cookie, bar, unprocessed) => {
+    const personTimeline = await fetch(`https://referralmanager.churchofjesuschrist.org/services/progress/timeline/${person.guid}`, {
         method: 'GET',
         'headers': {
             "Authorization": `Bearer ${bearer}`,
@@ -60,7 +61,14 @@ const getPersonTimeline = async (id, bearer, cookie) => {
     })
     .then(response => response.json())
 
-    return await processContactTime(personTimeline)
+    bar.increment()
+
+    const time =  await processContactTime(personTimeline)
+
+    if (!unprocessed[person.areaName]) {
+        unprocessed[person.areaName] = [];
+    }
+    unprocessed[person.areaName].push(time);
 }
 
 export const smlReport = async () => {
@@ -93,21 +101,22 @@ export const smlReport = async () => {
     bar.start(filtered.length, 0)
     let contactsWithoutAveraging = {}
 
+    const limiter = new Bottleneck({
+        maxConcurrent: 10,
+    })
+
 
     // If you don't await these promises the church servers will block you so you don't DDoS them.
-    for (const person of filtered) {
-        if (!person.guid) {
-            continue
-        }
-        const time = await getPersonTimeline(person.guid, bearer, cookieString)
-        if (!contactsWithoutAveraging[person.areaName]) {
-            contactsWithoutAveraging[person.areaName] = []
-        } 
-        contactsWithoutAveraging[person.areaName].push(time)
-        bar.increment()
-    }
+    let tasks = filtered
+        .filter(person => person.guid) // Ignore people without a GUID
+        .map(person => 
+            limiter.schedule(() => 
+                getPersonTimeline(person, bearer, cookieString, bar, contactsWithoutAveraging)
+            )
+        );
+    await Promise.all(tasks)
 
-    bar.stop()
+    bar.stop();
 
     // DELETE anything empty that remains
 
