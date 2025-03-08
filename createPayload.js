@@ -7,7 +7,6 @@ function isMoreThan12HoursOld(timestamp) {
 }
 
 export async function createPayload(list, avgMessage) {
-    console.log('list: ', list)
     const FILE_NAME = 'payload.json';
 
     if (existsSync(FILE_NAME)) {

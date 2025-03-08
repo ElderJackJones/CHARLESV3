@@ -71,7 +71,7 @@ async function main() {
                     console.clear()
                     const [todaysList, beginPackage] = await sneakyChurch(config.username, config.password)
                     await createPayload(todaysList, beginPackage)
-                    await sneakyFacebook(undefined, undefined, e2ee)
+                    await sneakyFacebook(undefined, undefined, e2ee.e2ee)
                 }
             } else {
                 console.clear()

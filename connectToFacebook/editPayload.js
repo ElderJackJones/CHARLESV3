@@ -27,15 +27,10 @@ export async function editPayload() {
     const prettyList = {};
     prettyList["avg"] = payload.average
 
-    for (const zone in payload.payload) {
-        console.log(zone)
-    }
-
     for (const zone in zoneObj) {
         const zoneClean = zone.trim().toString()
         const areaMap = {};  // Will hold areaName as key, and people array as value
         if (!payload.payload[zoneClean]) {
-            console.log(zoneClean)
             continue
         }        
         for (const person of payload.payload[zoneClean]) {
