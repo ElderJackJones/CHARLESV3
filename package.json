@@ -1,6 +1,6 @@
 {
   "name": "charlesv3",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "a friendly chabot written in js for use in the SCCM",
   "main": "index.js",
   "type": "module",
