@@ -17,6 +17,8 @@ JavaScript (or JS) is one of the only truly universal programming languages. It'
 
 HA, nice try. If you're supposed to use this, you'll have received a document with instructions and videos for setup. 
 
+AUTHORS NOTE: if you already know how to do everything and want a smoother running experience, double click the charles.bat file
+
 ## TODO
 
 - [x] Set up basic framework

@@ -1,0 +1,5 @@
+node_modules/
+resources/
+payload.json
+eslint.config.js
+cookies.json

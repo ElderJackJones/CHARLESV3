@@ -1,14 +1,17 @@
 {
-  "name": "charlesv2",
+  "name": "charlesv3",
   "version": "1.0.0",
-  "description": "a friendly chabot written in js",
+  "description": "a friendly chabot written in js for use in the SCCM",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
-  "author": "",
+  "author": "Jack Jones",
+  "bin": {
+    "charles": "./index.js"
+  },
   "license": "ISC",
   "dependencies": {
     "bottleneck": "^2.19.5",
