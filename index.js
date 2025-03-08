@@ -34,8 +34,8 @@ async function main() {
             choices: [
                 { title: 'Send Charles message', value: 'charles'},
                 { title: 'Get SML report', value: 'report'},
-                {title: 'Change settings', value: 'settings'},
                 { title: 'Test run Charles', value: 'test'},
+                { title: 'Change settings', value: 'settings'},
                 { title: 'Yeet outta here', value: 'exit'},
             ],
             initial: 0,
